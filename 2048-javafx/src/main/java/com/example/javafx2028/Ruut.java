@@ -51,12 +51,12 @@ public class Ruut {
                 ruutAsukohaJargi(this.x, this.y - 1).setVaartus(this.vaartus * 2);
 
                 // Uuendab skoori
-                Main.skoor += this.vaartus * 2;
+                Mang.skoor += this.vaartus * 2;
 
                 // Kontrollib, kas tekkis 2048 ja pole juba võitu tulnud
-                if (!Main.voit && this.vaartus * 2 == 2048) {
+                if (!Mang.voit && Mang.skoor >= 2048) {
                     System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Main.voit = true;
+                    Mang.voit = true;
                 }
 
                 // Eemaldab vana ruudu väljakult ja ruutude listist
@@ -76,10 +76,10 @@ public class Ruut {
                 return;
             } else if (checkCollision(suund) && ruutAsukohaJargi(this.x, this.y + 1).getVaartus() == this.vaartus) {
                 ruutAsukohaJargi(this.x, this.y + 1).setVaartus(this.vaartus * 2);
-                Main.skoor += this.vaartus * 2;
-                if (!Main.voit && this.vaartus * 2 == 2048) {
+                Mang.skoor += this.vaartus * 2;
+                if (!Mang.voit && Mang.skoor >= 2048) {
                     System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Main.voit = true;
+                    Mang.voit = true;
                 }
                 valjak.getValjak()[this.y][this.x] = null;
                 valjak.getRuudud().remove(this);
@@ -96,10 +96,10 @@ public class Ruut {
                 return;
             } else if (checkCollision(suund) && ruutAsukohaJargi(this.x + 1, this.y).getVaartus() == this.vaartus) {
                 ruutAsukohaJargi(this.x + 1, this.y).setVaartus(this.vaartus * 2);
-                Main.skoor += this.vaartus * 2;
-                if (!Main.voit && this.vaartus * 2 == 2048) {
+                Mang.skoor += this.vaartus * 2;
+                if (!Mang.voit && Mang.skoor >= 2048) {
                     System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Main.voit = true;
+                    Mang.voit = true;
                 }
                 valjak.getValjak()[this.y][this.x] = null;
                 valjak.getRuudud().remove(this);
@@ -116,10 +116,10 @@ public class Ruut {
                 return;
             } else if (checkCollision(suund) && ruutAsukohaJargi(this.x - 1, this.y).getVaartus() == this.vaartus) {
                 ruutAsukohaJargi(this.x - 1, this.y).setVaartus(this.vaartus * 2);
-                Main.skoor += this.vaartus * 2;
-                if (!Main.voit && this.vaartus * 2 == 2048) {
+                Mang.skoor += this.vaartus * 2;
+                if (!Mang.voit && Mang.skoor >= 2048) {
                     System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Main.voit = true;
+                    Mang.voit = true;
                 }
                 valjak.getValjak()[this.y][this.x] = null;
                 valjak.getRuudud().remove(this);
@@ -127,6 +127,96 @@ public class Ruut {
             }
         }
     }
+
+    // Liigutab ruutu vastavalt suunale. Kutsutakse välja Valjak update meetodis
+    public void liiguTest(String suund) {
+
+        // Jätab meelde ruudu vana positsiooni
+        int oldX = x;
+        int oldY = y;
+
+        // Vaatab läbi kõik suunad
+        if (suund.equals("yles")) {
+
+            // Kui üleval on vaba koht
+            if (y != 0 && !checkCollision("yles")) {
+
+                // Vähendab y, paneb selle ruudu uuele positsioonile ja muudab vana positsiooni nulliks
+                y--;
+                valjak.getValjak()[y][x] = this;
+                valjak.getValjak()[oldY][oldX] = null;
+
+                // Eemaldame ruudu ka väljaku ruutude listist
+                valjak.getRuudud().remove(ruutAsukohaJargi(oldX, oldY));
+                return;
+            }
+            // Kui üleval on ruut ja see on sama väärtusega.
+            else if (checkCollision(suund) && ruutAsukohaJargi(this.x, this.y - 1).getVaartus() == this.vaartus) {
+
+                // Muudab selle ruudu väärtust, millega esimene ruut kokku põrkas
+                ruutAsukohaJargi(this.x, this.y - 1).setVaartus(this.vaartus * 2);
+
+                // Eemaldab vana ruudu väljakult ja ruutude listist
+                valjak.getValjak()[this.y][this.x] = null;
+                valjak.getRuudud().remove(this);
+                return;
+            }
+        }
+
+        // Analoogselt teiste suundadega
+        else if (suund.equals("alla")) {
+            if (y != 3 && !checkCollision("alla")) {
+                y++;
+                valjak.getValjak()[y][x] = this;
+                valjak.getValjak()[oldY][oldX] = null;
+                valjak.getRuudud().remove(ruutAsukohaJargi(oldX, oldY));
+                return;
+            } else if (checkCollision(suund) && ruutAsukohaJargi(this.x, this.y + 1).getVaartus() == this.vaartus) {
+                ruutAsukohaJargi(this.x, this.y + 1).setVaartus(this.vaartus * 2);
+
+                valjak.getValjak()[this.y][this.x] = null;
+                valjak.getRuudud().remove(this);
+                return;
+            }
+        }
+
+        else if (suund.equals("paremale")) {
+            if (x != 3 && !checkCollision("paremale")) {
+                x++;
+                valjak.getValjak()[y][x] = this;
+                valjak.getValjak()[oldY][oldX] = null;
+                valjak.getRuudud().remove(ruutAsukohaJargi(oldX, oldY));
+                return;
+            } else if (checkCollision(suund) && ruutAsukohaJargi(this.x + 1, this.y).getVaartus() == this.vaartus) {
+                ruutAsukohaJargi(this.x + 1, this.y).setVaartus(this.vaartus * 2);
+
+                valjak.getValjak()[this.y][this.x] = null;
+                valjak.getRuudud().remove(this);
+                return;
+            }
+        }
+
+        else if (suund.equals("vasakule")) {
+            if (x != 0 && !checkCollision("vasakule")) {
+                x--;
+                valjak.getValjak()[y][x] = this;
+                valjak.getValjak()[oldY][oldX] = null;
+                valjak.getRuudud().remove(ruutAsukohaJargi(oldX, oldY));
+                return;
+            } else if (checkCollision(suund) && ruutAsukohaJargi(this.x - 1, this.y).getVaartus() == this.vaartus) {
+                ruutAsukohaJargi(this.x - 1, this.y).setVaartus(this.vaartus * 2);
+
+                valjak.getValjak()[this.y][this.x] = null;
+                valjak.getRuudud().remove(this);
+                return;
+            }
+        }
+    }
+
+
+
+
+
 
     // Võtab parameetriteks x ja y ning tagastab selle ruudu, mis väljakul on sellel positsioonil
     public Ruut ruutAsukohaJargi(int x, int y) {
@@ -192,4 +282,9 @@ public class Ruut {
     public String toString() {
         return vaartus + "";
     }
+
+
+
+
 }
+
