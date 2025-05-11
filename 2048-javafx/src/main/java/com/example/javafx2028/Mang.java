@@ -147,16 +147,17 @@ public class Mang extends Application {
         Scene stseen = new Scene(juurStackPane, 4 * (100 + 10) + 20, 4 * (100 + 10) + 100);
 
         stseen.setOnKeyPressed(event -> {
-            if (mangLabiPopup.isVisible() || voitPopup.isVisible()) {
-                if (event.getCode() == KeyCode.R) {
+            if (mangLabiPopup.isVisible() || voitPopup.isVisible()) { // kui mõni popup visible
+                if (event.getCode() == KeyCode.R) { // R input restardi jaoks
                     startGame();
                 }
-                return; // eira inputti peale R
+                return; // eira inputti
             }
-            if (valjak.checkGameOver() && event.getCode() != KeyCode.R) {
+            if (valjak.checkGameOver() && event.getCode() != KeyCode.R) { // kui midagi muud peale R siis ära võta inputti
                 return; // eira inputti
             }
 
+            // inputid
             String suund = null;
             switch (event.getCode()) {
                 case W: case UP:
@@ -171,10 +172,10 @@ public class Mang extends Application {
                 case D: case RIGHT:
                     suund = "paremale";
                     break;
-                case Q:
+                case Q: // lahku mängust
                     System.exit(0);
                     break;
-                case R:
+                case R: // restart
                     startGame();
                     return;
             }
@@ -182,7 +183,7 @@ public class Mang extends Application {
             if (suund != null) {
                 String vanaGrid = Arrays.deepToString(valjak.getValjak());
                 valjak.update(suund);
-                // uuenda kui midagi muutus
+                // uuenda kui midagi muutus (vana ja uue valjaku vahel)
                 if (!vanaGrid.equals(Arrays.deepToString(valjak.getValjak()))) {
                     uuendaManguGrid();
                 }
@@ -191,25 +192,27 @@ public class Mang extends Application {
 
         peaLava.setScene(stseen);
         peaLava.show();
-        startGame();
+        startGame(); // alusta mäng
     }
 
+    // alusta mäng
     public void startGame() {
         skoor = 0;
         voit = false;
         voitTeade = false;
-        valjak = new Valjak();
+        valjak = new Valjak(); // valjaku isend
         valjak.generateNewTile(); // alusta ühe ruuduga
         voitPopup.setVisible(false); // popup peidetud
         mangLabiPopup.setVisible(false); // popup peidetud
         peaosa.setDisable(false); // interaktiivsus
-        teade.setText("");
+        teade.setText(""); // teade tühjaks mängu alguses
         teade.setVisible(false);
         teade.setManaged(false);
-        uuendaManguGrid();
+        uuendaManguGrid(); // loo algplats
         manguGrid.requestFocus(); // fookus
     }
 
+    // uuenda mangu platsi ja skoori iga käigu korral
     private void uuendaManguGrid() {
         skoorVaartus.setText("" + skoor);
         if (skoor > parim) { // muuda parima skoori tulemust kui praegune on suurem
@@ -250,7 +253,7 @@ public class Mang extends Application {
             peaosa.setDisable(true); // interaktiivsuse peatamine mänguga
             teade.setVisible(false);
             teade.setManaged(false);
-        } else if (voit && !voitTeade) {
+        } else if (voit && !voitTeade) { // esimesel 2048 saavutamisel näita võidu popupi (järgmised korrad kui oled üle 2048 ei näita uuesti)
             voitPopup.setVisible(true);
             voitTeade = true;
             mangLabiPopup.setVisible(false);
@@ -290,7 +293,7 @@ public class Mang extends Application {
             case 512 -> Color.web("#edc850");
             case 1024 -> Color.web("#edc53f");
             case 2048 -> Color.web("#edc22e");
-            default -> Color.web("#cdc1b4"); // Empty or higher values
+            default -> Color.web("#cdc1b4");
         };
         return stiil + "-fx-background-color: " + toHexString(taust) + ";";
     }
