@@ -25,10 +25,6 @@ public class MainMenu extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setStyle("-fx-background-color: #faf8ef;");
-        //borderPane.setPadding(new Insets(40));
-
         // pealkiri
         Label h1 = new Label("2048");
         h1.setFont(Font.font("Arial", 60));
@@ -41,29 +37,38 @@ public class MainMenu extends Application {
         Button buttonSkoor = new Button("Skoorid");
         Button buttonVälju = new Button("Välju");
 
+        buttonMäng.setOnAction(e -> {
+            Mang mang = new Mang();
+            mang.start(primaryStage);
+        });
+
         // nuppude suurussed ja stiil
         String ilusNupp = "-fx-background-radius: 5;" +   // nurgad veits kumeraks
-                "-fx-border-color: transparent;" + // eemalda äärejooned
-                "-fx-background-insets: 0;" + // äärejoonte fix
-                "-fx-padding: 10 20 10 20;"; // padding
+                "-fx-padding: 10 20 10 20;" + // padding
+                "-fx-background-color: #d2b48c;"; // värv
+
         buttonMäng.setPrefSize(300, 50);
         buttonTut.setPrefSize(300, 50);
         buttonSkoor.setPrefSize(300, 50);
         buttonVälju.setPrefSize(300, 50);
+
         buttonMäng.setStyle(ilusNupp);
         buttonTut.setStyle(ilusNupp);
         buttonSkoor.setStyle(ilusNupp);
         buttonVälju.setStyle(ilusNupp);
 
-        VBox vbox = new VBox(20, h1, buttonMäng, buttonTut, buttonSkoor, buttonVälju);
-        vbox.setAlignment(Pos.CENTER);
 
+        //nüüd tegeleme paigutusega
+        BorderPane borderPane = new BorderPane();
+        borderPane.setStyle("-fx-background-color: #faf8ef;");
+
+        VBox vbox = new VBox(20, buttonMäng, buttonTut, buttonSkoor, buttonVälju);
+        vbox.setAlignment(Pos.CENTER);
 
         borderPane.setTop(h1);
         BorderPane.setAlignment(h1, Pos.CENTER);
         borderPane.setCenter(vbox);
-//        vbox.setStyle("-fx-background-color: #faf8ef;");
-//        vbox.setPadding(new javafx.geometry.Insets(40));
+
 
         Scene stseen1 = new Scene(borderPane, 800, 800);
         primaryStage.setTitle("2048");
