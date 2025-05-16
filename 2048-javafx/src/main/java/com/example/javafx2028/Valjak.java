@@ -122,7 +122,7 @@ public class Valjak {
                     for (int x = 0; x < 4; x++) {
                         Ruut ruut = testValjak.getValjak()[y][x];
                         if (ruut != null) {
-                            ruut.liigu(suund);
+                            ruut.liiguTest(suund);
                         }
                     }
                 }
@@ -134,7 +134,7 @@ public class Valjak {
                     for (int x = 0; x < 4; x++) {
                         Ruut ruut = testValjak.getValjak()[y][x];
                         if (ruut != null) {
-                            ruut.liigu(suund);
+                            ruut.liiguTest(suund);
                         }
                     }
                 }
@@ -146,7 +146,7 @@ public class Valjak {
                     for (int y = 0; y < 4; y++) {
                         Ruut ruut = testValjak.getValjak()[y][x];
                         if (ruut != null) {
-                            ruut.liigu(suund);
+                            ruut.liiguTest(suund);
                         }
                     }
                 }
@@ -158,7 +158,7 @@ public class Valjak {
                     for (int y = 0; y < 4; y++) {
                         Ruut ruut = testValjak.getValjak()[y][x];
                         if (ruut != null) {
-                            ruut.liigu(suund);
+                            ruut.liiguTest(suund);
                         }
                     }
                 }
@@ -167,6 +167,8 @@ public class Valjak {
 
         // Siin ei pea uut ruutu lisama
     }
+
+
 
     // Kontrollib, kas mäng on läbi
     // Vaatab, kas iga võimaliku inputi korral jääb väljak samaks.
@@ -328,3 +330,4 @@ public class Valjak {
     }
 
 }
+
