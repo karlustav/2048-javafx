@@ -1,6 +1,7 @@
 package com.example.javafx2028;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -9,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -36,11 +38,7 @@ public class MainMenu extends Application {
         Button buttonTut = new Button("Kuidas mängida?");
         Button buttonSkoor = new Button("Skoorid");
         Button buttonVälju = new Button("Välju");
-
-        buttonMäng.setOnAction(e -> {
-            Mang mang = new Mang();
-            mang.start(primaryStage);
-        });
+        Button buttonTagasi = new Button("Tagasi"); // välju nupuga tutorialist ja skooride paneelist
 
         // nuppude suurussed ja stiil
         String ilusNupp = "-fx-background-radius: 5;" +   // nurgad veits kumeraks
@@ -51,26 +49,68 @@ public class MainMenu extends Application {
         buttonTut.setPrefSize(300, 50);
         buttonSkoor.setPrefSize(300, 50);
         buttonVälju.setPrefSize(300, 50);
+        buttonTagasi.setPrefSize(100, 25);
 
         buttonMäng.setStyle(ilusNupp);
         buttonTut.setStyle(ilusNupp);
         buttonSkoor.setStyle(ilusNupp);
         buttonVälju.setStyle(ilusNupp);
+        buttonTagasi.setStyle(ilusNupp);
 
+        //tutorial paneel
+        BorderPane bptut = new BorderPane();
+        bptut.setStyle("-fx-background-color: #eee;");
+        bptut.setVisible(false);
+
+        Label tutorialText = new Label("bomboclat");
+        tutorialText.setAlignment((Pos.CENTER));
+        bptut.setCenter(tutorialText);
+
+        BorderPane.setAlignment(buttonTagasi, Pos.TOP_LEFT);
+        bptut.setTop(buttonTagasi);
+
+        bptut.setVisible(false);
+        
+        //skooride paneel
+        BorderPane bpskoor = new BorderPane();
+        bpskoor.setStyle("-fx-background-color: #eee;");
+
+        BorderPane.setAlignment(buttonTagasi, Pos.TOP_LEFT);
+        bpskoor.setTop(buttonTagasi);
+
+        bpskoor.setVisible(false);
+
+        //nuppude funktsionaalsus
+        buttonMäng.setOnAction(e -> { // alusta mängu
+            Mang mang = new Mang();
+            mang.start(primaryStage);
+        });
+
+        buttonTut.setOnAction(e -> bptut.setVisible(true)); // näita tutoriali
+
+        buttonSkoor.setOnAction(e -> bpskoor.setVisible(true)); //näita skoore
+
+        buttonVälju.setOnAction(e -> Platform.exit()); // exit game
+
+        buttonTagasi.setOnAction(e -> { // väju tutoorialist/skooride paneelist
+            bptut.setVisible(false);
+            bpskoor.setVisible(false);
+        });
 
         //nüüd tegeleme paigutusega
         BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-background-color: #faf8ef;");
 
-        VBox vbox = new VBox(20, buttonMäng, buttonTut, buttonSkoor, buttonVälju);
-        vbox.setAlignment(Pos.CENTER);
+        VBox vbnupp = new VBox(20, buttonMäng, buttonTut, buttonSkoor, buttonVälju); // kõik peale "tagasi" nupu ekraani keskele
+        vbnupp.setAlignment(Pos.CENTER);
+        borderPane.setCenter(vbnupp);
 
-        borderPane.setTop(h1);
         BorderPane.setAlignment(h1, Pos.CENTER);
-        borderPane.setCenter(vbox);
+        borderPane.setTop(h1); // pealkiri ekraani üles
 
+        StackPane juur = new StackPane(borderPane, bptut, bpskoor); // main menu on kolm paneeli, kaks on peidetud(tutorial ja skoor)
 
-        Scene stseen1 = new Scene(borderPane, 800, 800);
+        Scene stseen1 = new Scene(juur, 800, 800);
         primaryStage.setTitle("2048");
         primaryStage.setScene(stseen1);
         primaryStage.setMinWidth(400);
