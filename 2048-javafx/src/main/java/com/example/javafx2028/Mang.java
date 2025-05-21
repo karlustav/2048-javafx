@@ -31,7 +31,15 @@ public class Mang extends Application {
     private StackPane voitPopup;
     private Button mangiEdasi;
     public static int skoor = 0;
-    public static int parim = 0;
+    public static int parim;
+
+    static {
+        try {
+            parim = laadiMaxSkoor("skoorid.txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static boolean voit = false;
     private boolean voitTeade = false;
@@ -333,7 +341,7 @@ public class Mang extends Application {
 
 
     // loob ülemise rea praeguse ja parima skoori jaoks
-    public HBox looSkoorVaade() {
+    public HBox looSkoorVaade() throws IOException {
         // praegune skoor
         Label skoorKiri = new Label("SKOOR");
         skoorKiri.setFont(Font.font("Arial", 14));
@@ -345,7 +353,7 @@ public class Mang extends Application {
         // parim skoor
         Label parimLabel = new Label("PARIM");
         parimLabel.setFont(Font.font("Arial", 14));
-        parimVaartus = new Label("0");
+        parimVaartus = new Label(String.valueOf(laadiMaxSkoor("skoorid.txt")));
         parimVaartus.setFont(Font.font("Arial Bold", 24));
         VBox parimKast = new VBox(parimLabel, parimVaartus);
         parimKast.setAlignment(Pos.CENTER);
@@ -369,9 +377,9 @@ public class Mang extends Application {
             String rida;
             // Loeb ridu kuni on
             while ((rida = in.readLine()) != null) {
-                String[] osad = rida.split(":\\s*");
-                int skoor = Integer.parseInt(osad[1]);
-                skoorid.add(rida);
+                String[] osad = rida.split(":");
+                int skoor = Integer.parseInt(osad[1].trim());
+                skoorid.add(String.valueOf(skoor));
             }
         }
         return skoorid;
@@ -384,9 +392,9 @@ public class Mang extends Application {
             String rida;
             // Loeb ridu kuni on
             while ((rida = in.readLine()) != null) {
-                String[] osad = rida.split(":\\s*");
+                String[] osad = rida.split(":");
                 String nimi = osad[0];
-                int skoor = Integer.parseInt(osad[1]);
+                int skoor = Integer.parseInt(osad[1].trim());
                 skoorid.put(nimi, skoor);
             }
         }
@@ -398,5 +406,16 @@ public class Mang extends Application {
             writer.write(nimi + ": " + skoor);
             writer.newLine();
         }
+    }
+
+    public static int laadiMaxSkoor(String failinimi) throws IOException {
+        ArrayList<String> skoorid = (ArrayList<String>) loeSkoorid(failinimi);
+        int max = 0;
+        for (String skoor : skoorid) {
+            if (Integer.parseInt(skoor) > max) {
+                max = Integer.parseInt(skoor);
+            }
+        }
+        return max;
     }
 }
