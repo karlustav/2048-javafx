@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -270,6 +271,9 @@ public class Mang extends Application {
             peaosa.setDisable(true); // interaktiivsuse peatamine mänguga
             teade.setVisible(false);
             teade.setManaged(false);
+
+            String nimi = küsiKasutajaNimi();
+            lisaSkoor("skoorid.txt", nimi, skoor);
         } else if (voit && !voitTeade) { // esimesel 2048 saavutamisel näita võidu popupi (järgmised korrad kui oled üle 2048 ei näita uuesti)
             voitPopup.setVisible(true);
             voitTeade = true;
@@ -439,4 +443,15 @@ public class Mang extends Application {
 
         return top10Map;
     }
+
+    private String küsiKasutajaNimi() {
+        TextInputDialog dialoog = new TextInputDialog();
+        dialoog.setTitle("Sisesta nimi");
+        dialoog.setHeaderText("Sisesta oma nimi, et salvestada skoor");
+        dialoog.setContentText("Nimi:");
+
+        Optional<String> tulemus = dialoog.showAndWait();
+        return tulemus.orElse("Tundmatu"); // kui tühjaks jääb
+    }
+
 }
