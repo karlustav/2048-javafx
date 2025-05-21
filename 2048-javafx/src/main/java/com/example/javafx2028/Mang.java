@@ -14,7 +14,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 public class Mang extends Application {
 
@@ -213,7 +214,7 @@ public class Mang extends Application {
     }
 
     // uuenda mangu platsi ja skoori iga käigu korral
-    private void uuendaManguGrid() {
+    private void uuendaManguGrid() throws IOException {
         skoorVaartus.setText("" + skoor);
         if (skoor > parim) { // muuda parima skoori tulemust kui praegune on suurem
             parim = skoor;
@@ -351,5 +352,43 @@ public class Mang extends Application {
         parimKast.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 8; -fx-padding: 10;");
 
         return kast;
+    }
+
+    // Loeb failist koik skoorid --> ArrayList<Integer>
+    private static List<String> loeSkoorid(String failinimi) throws IOException {
+        ArrayList<String> skoorid = new ArrayList<>();
+        try (BufferedReader in = new BufferedReader(new FileReader(failinimi))) {
+            String rida;
+            // Loeb ridu kuni on
+            while ((rida = in.readLine()) != null) {
+                String[] osad = rida.split(":\\s*");
+                int skoor = Integer.parseInt(osad[1]);
+                skoorid.add(rida);
+            }
+        }
+        return skoorid;
+    }
+
+    // Loeb failist koik skoorid --> Map<String, Integer>
+    private static Map<String, Integer> loeSkooridNimedega(String failinimi) throws IOException {
+        Map<String, Integer> skoorid = new HashMap<>();
+        try (BufferedReader in = new BufferedReader(new FileReader(failinimi))) {
+            String rida;
+            // Loeb ridu kuni on
+            while ((rida = in.readLine()) != null) {
+                String[] osad = rida.split(":\\s*");
+                String nimi = osad[0];
+                int skoor = Integer.parseInt(osad[1]);
+                skoorid.put(nimi, skoor);
+            }
+        }
+        return skoorid;
+    }
+
+    public static void lisaSkoor(String failinimi, String nimi, int skoor) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(failinimi, true))) {
+            writer.write(nimi + ": " + skoor);
+            writer.newLine();
+        }
     }
 }

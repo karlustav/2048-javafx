@@ -1,5 +1,6 @@
 package com.example.javafx2028;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -173,7 +174,7 @@ public class Valjak {
     // Kontrollib, kas mäng on läbi
     // Vaatab, kas iga võimaliku inputi korral jääb väljak samaks.
     // Kui valiidne käik on olemas, siis kindlasti väljak muutub.
-    public boolean checkGameOver() {
+    public boolean checkGameOver() throws IOException {
 
         // Piisab, kui võrrelda uue ja vana väjaku deepToStringe
         String vana = Arrays.deepToString(valjak);
@@ -207,6 +208,7 @@ public class Valjak {
             }
         }
         // Kui ei muutunud midagi ühegi suuna korral, siis on mäng läbi
+        Mang.lisaSkoor("skoorid.txt", "Mati", Mang.skoor);
         return true;
     }
 

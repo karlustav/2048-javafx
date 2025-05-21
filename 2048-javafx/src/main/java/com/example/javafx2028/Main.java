@@ -3,6 +3,7 @@ package com.example.javafx2028;
 import org.w3c.dom.ls.LSOutput;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class Main {
     public static int skoor = 0;
     // static boolean abi = true;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String input = null;
         // Tekitab Valjak isendi
         Valjak valjak = new Valjak();
