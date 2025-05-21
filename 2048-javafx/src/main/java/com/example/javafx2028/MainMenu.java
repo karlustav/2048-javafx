@@ -17,6 +17,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
+import java.io.IOException;
+
 public class MainMenu extends Application {
 
     public static void main(String[] args) {
@@ -88,7 +90,11 @@ public class MainMenu extends Application {
         //nuppude funktsionaalsus
         buttonMäng.setOnAction(e -> { // alusta mängu
             Mang mang = new Mang();
-            mang.start(primaryStage);
+            try {
+                mang.start(primaryStage);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         buttonTut.setOnAction(e -> bptut.setVisible(true)); // näita tutoriali

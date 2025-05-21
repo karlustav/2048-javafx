@@ -41,7 +41,7 @@ public class Mang extends Application {
     }
 
     @Override
-    public void start(Stage peaLava) {
+    public void start(Stage peaLava) throws IOException{
         // tekitab Valjak isendi
         valjak = new Valjak();
         peaLava.setTitle("2048");
@@ -186,7 +186,11 @@ public class Mang extends Application {
                 valjak.update(suund);
                 // uuenda kui midagi muutus (vana ja uue valjaku vahel)
                 if (!vanaGrid.equals(Arrays.deepToString(valjak.getValjak()))) {
-                    uuendaManguGrid();
+                    try {
+                        uuendaManguGrid();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -209,7 +213,11 @@ public class Mang extends Application {
         teade.setText(""); // teade tühjaks mängu alguses
         teade.setVisible(false);
         teade.setManaged(false);
-        uuendaManguGrid(); // loo algplats
+        try {
+            uuendaManguGrid(); // loo algplats
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         manguGrid.requestFocus(); // fookus
     }
 
