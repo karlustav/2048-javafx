@@ -17,6 +17,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
+import java.io.IOException;
+import java.util.Map;
+
 public class MainMenu extends Application {
 
     public static void main(String[] args) {
@@ -83,17 +86,47 @@ public class MainMenu extends Application {
         bpskoor.setTop(buttonTagasiskoor);
         BorderPane.setMargin(buttonTagasiskoor, new Insets(25, 25, 0, 0)); // nurgast eemale
 
+        VBox skooridekast = new VBox(10);
+        skooridekast.setPadding(new Insets(25, 25, 25, 25));
+        bpskoor.setCenter(skooridekast);
+
         bpskoor.setVisible(false);
 
         //nuppude funktsionaalsus
         buttonMäng.setOnAction(e -> { // alusta mängu
             Mang mang = new Mang();
-            mang.start(primaryStage);
+            try {
+                mang.start(primaryStage);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         buttonTut.setOnAction(e -> bptut.setVisible(true)); // näita tutoriali
 
-        buttonSkoor.setOnAction(e -> bpskoor.setVisible(true)); //näita skoore
+        buttonSkoor.setOnAction(e -> {
+            skooridekast.getChildren().clear();
+
+            Map<String, Integer> skoorid = null;
+            try {
+                skoorid = Mang.loeTop10Skoorid("skoorid.txt");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            StringBuilder sb = new StringBuilder("Top 10 skoorid: \n");
+
+            for (Map.Entry<String, Integer> entry: skoorid.entrySet()) {
+                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            }
+
+            Label skoorTekst = new Label(sb.toString());
+            skoorTekst.setStyle("-fx-font-size: 18; -fx-text-fill: #333;");
+            bpskoor.setCenter(skoorTekst);
+
+            bpskoor.setVisible(true);
+        });
+        //näita skoore
 
         buttonVälju.setOnAction(e -> Platform.exit()); // exit game
 

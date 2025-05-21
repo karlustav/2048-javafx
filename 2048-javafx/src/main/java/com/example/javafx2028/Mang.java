@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -14,7 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 public class Mang extends Application {
 
@@ -30,7 +32,15 @@ public class Mang extends Application {
     private StackPane voitPopup;
     private Button mangiEdasi;
     public static int skoor = 0;
-    public static int parim = 0;
+    public static int parim;
+
+    static {
+        try {
+            parim = laadiMaxSkoor("skoorid.txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static boolean voit = false;
     private boolean voitTeade = false;
@@ -40,7 +50,7 @@ public class Mang extends Application {
     }
 
     @Override
-    public void start(Stage peaLava) {
+    public void start(Stage peaLava) throws IOException{
         // tekitab Valjak isendi
         valjak = new Valjak();
         peaLava.setTitle("2048");
@@ -185,7 +195,11 @@ public class Mang extends Application {
                 valjak.update(suund);
                 // uuenda kui midagi muutus (vana ja uue valjaku vahel)
                 if (!vanaGrid.equals(Arrays.deepToString(valjak.getValjak()))) {
-                    uuendaManguGrid();
+                    try {
+                        uuendaManguGrid();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -208,12 +222,16 @@ public class Mang extends Application {
         teade.setText(""); // teade tühjaks mängu alguses
         teade.setVisible(false);
         teade.setManaged(false);
-        uuendaManguGrid(); // loo algplats
+        try {
+            uuendaManguGrid(); // loo algplats
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         manguGrid.requestFocus(); // fookus
     }
 
     // uuenda mangu platsi ja skoori iga käigu korral
-    private void uuendaManguGrid() {
+    private void uuendaManguGrid() throws IOException {
         skoorVaartus.setText("" + skoor);
         if (skoor > parim) { // muuda parima skoori tulemust kui praegune on suurem
             parim = skoor;
@@ -253,6 +271,9 @@ public class Mang extends Application {
             peaosa.setDisable(true); // interaktiivsuse peatamine mänguga
             teade.setVisible(false);
             teade.setManaged(false);
+
+            String nimi = küsiKasutajaNimi();
+            lisaSkoor("skoorid.txt", nimi, skoor);
         } else if (voit && !voitTeade) { // esimesel 2048 saavutamisel näita võidu popupi (järgmised korrad kui oled üle 2048 ei näita uuesti)
             voitPopup.setVisible(true);
             voitTeade = true;
@@ -324,7 +345,7 @@ public class Mang extends Application {
 
 
     // loob ülemise rea praeguse ja parima skoori jaoks
-    public HBox looSkoorVaade() {
+    public HBox looSkoorVaade() throws IOException {
         // praegune skoor
         Label skoorKiri = new Label("SKOOR");
         skoorKiri.setFont(Font.font("Arial", 14));
@@ -336,7 +357,7 @@ public class Mang extends Application {
         // parim skoor
         Label parimLabel = new Label("PARIM");
         parimLabel.setFont(Font.font("Arial", 14));
-        parimVaartus = new Label("0");
+        parimVaartus = new Label(String.valueOf(laadiMaxSkoor("skoorid.txt")));
         parimVaartus.setFont(Font.font("Arial Bold", 24));
         VBox parimKast = new VBox(parimLabel, parimVaartus);
         parimKast.setAlignment(Pos.CENTER);
@@ -352,4 +373,85 @@ public class Mang extends Application {
 
         return kast;
     }
+
+    // Loeb failist koik skoorid --> ArrayList<Integer>
+    private static List<String> loeSkoorid(String failinimi) throws IOException {
+        ArrayList<String> skoorid = new ArrayList<>();
+        try (BufferedReader in = new BufferedReader(new FileReader(failinimi))) {
+            String rida;
+            // Loeb ridu kuni on
+            while ((rida = in.readLine()) != null) {
+                String[] osad = rida.split(":");
+                int skoor = Integer.parseInt(osad[1].trim());
+                skoorid.add(String.valueOf(skoor));
+            }
+        }
+        return skoorid;
+    }
+
+    // Loeb failist koik skoorid --> Map<String, Integer>
+    private static Map<String, Integer> loeSkooridNimedega(String failinimi) throws IOException {
+        Map<String, Integer> skoorid = new HashMap<>();
+        try (BufferedReader in = new BufferedReader(new FileReader(failinimi))) {
+            String rida;
+            // Loeb ridu kuni on
+            while ((rida = in.readLine()) != null) {
+                String[] osad = rida.split(":");
+                String nimi = osad[0];
+                int skoor = Integer.parseInt(osad[1].trim());
+                skoorid.put(nimi, skoor);
+            }
+        }
+        return skoorid;
+    }
+
+    public static void lisaSkoor(String failinimi, String nimi, int skoor) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(failinimi, true))) {
+            writer.write(nimi + ": " + skoor);
+            writer.newLine();
+        }
+    }
+
+    public static int laadiMaxSkoor(String failinimi) throws IOException {
+        ArrayList<String> skoorid = (ArrayList<String>) loeSkoorid(failinimi);
+        int max = 0;
+        for (String skoor : skoorid) {
+            if (Integer.parseInt(skoor) > max) {
+                max = Integer.parseInt(skoor);
+            }
+        }
+        return max;
+    }
+
+    public static Map<String, Integer> loeTop10Skoorid(String failinimi) throws IOException {
+        Map<String, Integer> skoorid = loeSkooridNimedega(failinimi);
+
+        // Sorteeri kirjed kahanevalt väärtuse järgi
+        List<Map.Entry<String, Integer>> skoorideList = new ArrayList<>(skoorid.entrySet());
+        skoorideList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+        // Võta top 10
+        if (skoorideList.size() > 10) {
+            skoorideList = skoorideList.subList(0, 10);
+        }
+
+        // Pane tagasi map-i
+        Map<String, Integer> top10Map = new LinkedHashMap<>(); // säilitab järjekorra
+        for (Map.Entry<String, Integer> entry : skoorideList) {
+            top10Map.put(entry.getKey(), entry.getValue());
+        }
+
+        return top10Map;
+    }
+
+    private String küsiKasutajaNimi() {
+        TextInputDialog dialoog = new TextInputDialog();
+        dialoog.setTitle("Sisesta nimi");
+        dialoog.setHeaderText("Sisesta oma nimi, et salvestada skoor");
+        dialoog.setContentText("Nimi:");
+
+        Optional<String> tulemus = dialoog.showAndWait();
+        return tulemus.orElse("Tundmatu"); // kui tühjaks jääb
+    }
+
 }
