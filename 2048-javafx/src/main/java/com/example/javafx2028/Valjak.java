@@ -209,7 +209,7 @@ public class Valjak {
         }
         // Kui ei muutunud midagi ühegi suuna korral, siis on mäng läbi
         try {
-            Mang.lisaSkoor("skoorid.txt", "Mati", Mang.skoor);
+            Mang.lisaSkoor("skoorid.txt", "Stefan", Mang.skoor);
         } catch (IOException e) {
             e.printStackTrace();
         }

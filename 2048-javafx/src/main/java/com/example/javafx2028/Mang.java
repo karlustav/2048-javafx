@@ -418,4 +418,25 @@ public class Mang extends Application {
         }
         return max;
     }
+
+    public static Map<String, Integer> loeTop10Skoorid(String failinimi) throws IOException {
+        Map<String, Integer> skoorid = loeSkooridNimedega(failinimi);
+
+        // Sorteeri kirjed kahanevalt väärtuse järgi
+        List<Map.Entry<String, Integer>> skoorideList = new ArrayList<>(skoorid.entrySet());
+        skoorideList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+        // Võta top 10
+        if (skoorideList.size() > 10) {
+            skoorideList = skoorideList.subList(0, 10);
+        }
+
+        // Pane tagasi map-i
+        Map<String, Integer> top10Map = new LinkedHashMap<>(); // säilitab järjekorra
+        for (Map.Entry<String, Integer> entry : skoorideList) {
+            top10Map.put(entry.getKey(), entry.getValue());
+        }
+
+        return top10Map;
+    }
 }
