@@ -61,9 +61,13 @@ public class Mang extends Application {
 
         // teade mängu lõpu jaoks
         teade = new Label();
-        teade.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
+        teade.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
         teade.setVisible(false);
         teade.setManaged(false);
+        teade.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-padding: 10; -fx-border-radius: 5; -fx-background-radius: 5;");
+        teade.setWrapText(true);
+        teade.setAlignment(Pos.CENTER);
+        teade.setMaxWidth(Double.MAX_VALUE);
 
         // teade ja skoorid
         VBox vbox = new VBox();
