@@ -20,20 +20,30 @@ import java.util.*;
 
 public class Mang extends Application {
 
+    // mänguväljak
     private Valjak valjak;
+    // graafilise mängugridi konteiner
     private GridPane manguGrid;
+    // skooride sildid
     private Label skoorVaartus;
     private Label parimVaartus;
+    // teate kuvamise label
     private Label teade;
+    // hoiab visuaalseid kihte
     private StackPane juurStackPane;
+    // peamine paigutusala
     private BorderPane peaosa;
+    // popup mängu lõppemise korral
     private StackPane mangLabiPopup;
     private Label mangLabiSkoor;
+    // popup võitmise korral
     private StackPane voitPopup;
     private Button mangiEdasi;
+    // skooride hoidmine
     public static int skoor = 0;
     public static int parim;
 
+    // laeb parima skoori failist
     static {
         try {
             parim = laadiMaxSkoor("skoorid.txt");
@@ -42,9 +52,11 @@ public class Mang extends Application {
         }
     }
 
+    // mängu võidu ja popupi jälgimine
     public static boolean voit = false;
     private boolean voitTeade = false;
 
+    // mängu käivitamine
     public static void main(String[] args) {
         launch(args);
     }
@@ -55,11 +67,11 @@ public class Mang extends Application {
         valjak = new Valjak();
         peaLava.setTitle("2048");
 
-        // praegune ja parim skoor
+        // ülemine osa, kus on skoorid
         HBox skoorParim = looSkoorVaade();
         skoorParim.setAlignment(Pos.CENTER);
 
-        // teade mängu lõpu jaoks
+        // teate silt, erineva info jaoks
         teade = new Label();
         teade.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
         teade.setVisible(false);
@@ -69,7 +81,7 @@ public class Mang extends Application {
         teade.setAlignment(Pos.CENTER);
         teade.setMaxWidth(Double.MAX_VALUE);
 
-        // teade ja skoorid
+        // teade ja skoorid box
         VBox vbox = new VBox();
         vbox.getChildren().addAll(skoorParim, teade);
 
@@ -86,7 +98,7 @@ public class Mang extends Application {
             }
         }
 
-        // kõik ühe grupi sisse
+        // põhistruktuuri loomine
         peaosa = new BorderPane();
         peaosa.setTop(vbox);
         peaosa.setCenter(manguGrid);
@@ -97,28 +109,33 @@ public class Mang extends Application {
         mangLabiPopup.setAlignment(Pos.CENTER);
         mangLabiPopup.setVisible(false); // algselt peidetud
 
-        VBox mangLabiKast = new VBox(20); // Spacing for elements inside the popup
+        // mängu kaotamisel kasti stiil
+        VBox mangLabiKast = new VBox(20);
         mangLabiKast.setAlignment(Pos.CENTER);
-        mangLabiKast.setStyle("-fx-background-color: #f0f0f0; " + // Light grey background for the box
+        mangLabiKast.setStyle("-fx-background-color: #f0f0f0; " +
                 "-fx-padding: 40px; " +
-                "-fx-border-color: #555555; " +       // Darker border
+                "-fx-border-color: #555555; " +
                 "-fx-border-width: 2px; " +
                 "-fx-background-radius: 10px; " +
                 "-fx-border-radius: 8px;");
         mangLabiKast.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE); // mahuta sisu
 
+        // label mängu lõpu jaoks
         Label mangLabiKiri = new Label("Mäng Läbi!");
         mangLabiKiri.setFont(Font.font("Arial", FontWeight.BOLD, 32));
         mangLabiKiri.setTextFill(Color.web("#333333"));
 
-        mangLabiSkoor = new Label("Skoor: 0"); // Will be updated
+        // algselt skoori sättimine nulliks
+        mangLabiSkoor = new Label("Skoor: 0");
         mangLabiSkoor.setFont(Font.font("Arial", FontWeight.NORMAL, 24));
         mangLabiSkoor.setTextFill(Color.web("#444444"));
 
+        // uuesti alustamise võimalus
         Label restart = new Label("Vajuta R, et uuesti alustada");
         restart.setFont(Font.font("Arial", FontWeight.NORMAL, 18));
         restart.setTextFill(Color.web("#555555"));
 
+        // mäng läbi vajalike asjade lisamine kasti ja siis popupi
         mangLabiKast.getChildren().addAll(mangLabiKiri, mangLabiSkoor, restart);
         mangLabiPopup.getChildren().add(mangLabiKast);
 
@@ -128,20 +145,23 @@ public class Mang extends Application {
         voitPopup.setAlignment(Pos.CENTER);
         voitPopup.setVisible(false); // algselt peidetud
 
+        // mängu võitmisel kasti stiil
         VBox voitKast = new VBox(20);
         voitKast.setAlignment(Pos.CENTER);
-        voitKast.setStyle("-fx-background-color: #e8f5e9; " + // Light green background for the box
+        voitKast.setStyle("-fx-background-color: #e8f5e9; " +
                 "-fx-padding: 40px; " +
-                "-fx-border-color: #4caf50; " +    // Green border
+                "-fx-border-color: #4caf50; " +
                 "-fx-border-width: 2px; " +
                 "-fx-background-radius: 10px; " +
                 "-fx-border-radius: 8px;");
         voitKast.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE); // mahuta sisu
 
+        // label mängu võitmise jaoks
         Label voitKiri = new Label("VÕITSID!");
         voitKiri.setFont(Font.font("Arial", FontWeight.BOLD, 36));
         voitKiri.setTextFill(Color.web("#1b5e20"));
 
+        // nupp mängu jätkamiseks pärast võitu
         mangiEdasi = new Button("Jätka mängu");
         mangiEdasi.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         mangiEdasi.setPadding(new Insets(10, 20, 10 ,20));
@@ -151,6 +171,7 @@ public class Mang extends Application {
             manguGrid.requestFocus();
         });
 
+        // mäng võidetud asjade lisamine kasti ja popupi
         voitKast.getChildren().addAll(voitKiri, mangiEdasi);
         voitPopup.getChildren().add(voitKast);
 
@@ -158,35 +179,43 @@ public class Mang extends Application {
         juurStackPane = new StackPane();
         juurStackPane.getChildren().addAll(peaosa, voitPopup, mangLabiPopup);
 
+        // stseen
         Scene stseen = new Scene(juurStackPane, 4 * (100 + 10) + 20, 4 * (100 + 10) + 100);
 
+        // klahvivajutuse kuulaja
         stseen.setOnKeyPressed(event -> {
+            // kui võidu või kaotuse popup ees
             if (mangLabiPopup.isVisible() || voitPopup.isVisible()) {
-                if (event.getCode() == KeyCode.R) {
+                if (event.getCode() == KeyCode.R) { // klahvi R vajutades, alusta uut mängu
                     startGame();
                 }
                 return;
             }
 
+            // kui mäng läbi ja klahv ei ole R, siis ignoreerime
             if (valjak.checkGameOver() && event.getCode() != KeyCode.R) {
                 return;
             }
 
+            // kui klahv on Q, siis välju mängust
             if (event.getCode() == KeyCode.Q) {
                 System.exit(0);
                 return;
             }
 
+            // kui klahv on R, siis alusta uut mängu
             if (event.getCode() == KeyCode.R) {
                 startGame();
                 return;
             }
 
+            // töötleb mängu käiku vastavalt klahvile
             try {
                 processMove(event.getCode());
                 uuendaManguGrid();
                 teade.setVisible(false);
             } catch (ViganeSisendErind | KeelatudKaikErind e) {
+                // kui sisend on vigane või keelatud käik, näita veateadet
                 teade.setText(e.getMessage());
                 teade.setVisible(true);
                 teade.setManaged(true);
@@ -201,6 +230,7 @@ public class Mang extends Application {
         startGame(); // alusta mäng
     }
 
+    // klahvivajutuse töötlemine
     private void processMove(KeyCode keyCode) throws ViganeSisendErind, KeelatudKaikErind {
         String suund = switch (keyCode) {
             case W, UP -> "yles";
@@ -210,10 +240,12 @@ public class Mang extends Application {
             default -> throw new ViganeSisendErind("Lubamatu sisend. Kasuta W, A, S, D või nooleklahve.");
         };
 
+        // mängu gridide võrdlemine enne ja pärast käigu tegemist
         String vanaGrid = Arrays.deepToString(valjak.getValjak());
         valjak.update(suund);
         String uusGrid = Arrays.deepToString(valjak.getValjak());
 
+        // kui mängu grid ei muutunud, siis viskab erindi
         if (vanaGrid.equals(uusGrid)) {
             throw new KeelatudKaikErind("Käik ei muutnud midagi.");
         }
@@ -250,25 +282,34 @@ public class Mang extends Application {
             parimVaartus.setText("" + parim);
         }
 
-        manguGrid.getChildren().removeIf(node -> !(node.getStyle().contains("#cdc1b4"))); // eemalda vanad ruudud
+        // eemalda vanad ruudud
+        manguGrid.getChildren().removeIf(node -> !(node.getStyle().contains("#cdc1b4")));
 
+        // hetkene väljak
         Ruut[][] praeguneGrid = valjak.getValjak();
-        for (int i = 0; i < 4; i++) { // row
-            for (int j = 0; j < 4; j++) { // col
-                // Re-add background cell for consistency if they were removed (they shouldn't be with the filter above)
+
+        // läbitakse kogu väljak
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
                 int finalI = i;
                 int finalJ = j;
+
+                // kui sellel ruudul pole #cdc1b4 värviga tausta
                 if (manguGrid.getChildren().filtered(node -> GridPane.getRowIndex(node) == finalI && GridPane.getColumnIndex(node) == finalJ && node.getStyle().contains("#cdc1b4")).isEmpty()) {
+                    // luuakse uus ruut
                     StackPane ruut = new StackPane();
                     ruut.setPrefSize(100, 100);
                     ruut.setStyle("-fx-background-color: #cdc1b4; -fx-background-radius: 4;");
+                    // lisatakse see mangugridile
                     manguGrid.add(ruut, j, i);
                 }
 
+                // kui on selles positsioonis mingi ruut
                 if (praeguneGrid[i][j] != null) {
                     Ruut ruut = praeguneGrid[i][j];
                     StackPane uusRuut = looRuut(ruut.getVaartus());
-                    manguGrid.add(uusRuut, j, i); // uue ruudu lisamine
+                    // uue ruudu lisamine samale kohale mangugridil
+                    manguGrid.add(uusRuut, j, i);
                 }
             }
         }
@@ -299,19 +340,23 @@ public class Mang extends Application {
         StackPane ruut = new StackPane();
         ruut.setPrefSize(100, 100);
 
+        // ruudu väärtuse näitamine
         Text tekst = new Text(String.valueOf(value));
         tekst.setFont(Font.font("Arial", FontWeight.BOLD, value < 100 ? 36 : (value < 1000 ? 32 : 24)));
         tekst.setFill(getTextColor(value));
 
+        // teksti lisamine ruudu sisse
         ruut.getChildren().addAll(tekst);
         ruut.setStyle(ruuduStiil(value));
         ruut.setAlignment(Pos.CENTER);
         return ruut;
     }
 
-    // Värvid
+    // Värvid ruutudele
     private String ruuduStiil(int value) {
+        // ümarad nurgad
         String stiil = "-fx-background-radius: 4; ";
+        // värvi määramine vastavalt ruudu väärtusele
         Color taust = switch (value) {
             case 2 -> Color.web("#eee4da");
             case 4 -> Color.web("#ede0c8");
@@ -324,25 +369,25 @@ public class Mang extends Application {
             case 512 -> Color.web("#edc850");
             case 1024 -> Color.web("#edc53f");
             case 2048 -> Color.web("#edc22e");
-            default -> Color.web("#cdc1b4");
+            default -> Color.web("#cdc1b4"); // tühjad ruudud
         };
         return stiil + "-fx-background-color: " + toHexString(taust) + ";";
     }
 
-    // värvi kodeerimine
+    // JavaFX heksavärvi muutmine stringiks (#RRGGBB formaadis)
     private String toHexString(Color color) {
         return String.format("#%02X%02X%02X",
-                (int) (color.getRed() * 255),
-                (int) (color.getGreen() * 255),
-                (int) (color.getBlue() * 255));
+                (int) (color.getRed() * 255), // punane
+                (int) (color.getGreen() * 255), // roheline
+                (int) (color.getBlue() * 255)); // sinine
     }
 
-    // teksti värv
+    // teksti värv tagastamine vastavalt väärtusele
     private Color getTextColor(int value) {
         return (value < 8 || value == 0) ? Color.web("#776e65") : Color.web("#f9f6f2");
     }
 
-    // ruudustik
+    // ruudustiku vaade
     public GridPane looManguVaade() {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -415,16 +460,20 @@ public class Mang extends Application {
         return skoorid;
     }
 
+    // lisab faili lõppu uue skoori koos mängija nimega
     public static void lisaSkoor(String failinimi, String nimi, int skoor) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(failinimi, true))) {
+            // kirjutab rea kujul "nimi: skoor"
             writer.write(nimi + ": " + skoor);
-            writer.newLine();
+            writer.newLine(); // reavahetuse lisamine
         }
     }
 
+    // loeb kõik skoorid failist ja tagastab suurima skoori väärtuse
     public static int laadiMaxSkoor(String failinimi) throws IOException {
+        // skooride lugemine failist
         ArrayList<String> skoorid = (ArrayList<String>) loeSkoorid(failinimi);
-        int max = 0;
+        int max = 0; // algväärtus suurimale skoorile
         for (String skoor : skoorid) {
             if (Integer.parseInt(skoor) > max) {
                 max = Integer.parseInt(skoor);
@@ -433,7 +482,9 @@ public class Mang extends Application {
         return max;
     }
 
+    // loeb failist skoorid koos nimedega ja tagastab 10 parimat mängijat skooriga
     public static Map<String, Integer> loeTop10Skoorid(String failinimi) throws IOException {
+        // skooride lugemine mängija nimega
         Map<String, Integer> skoorid = loeSkooridNimedega(failinimi);
 
         // Sorteeri kirjed kahanevalt väärtuse järgi
@@ -454,13 +505,16 @@ public class Mang extends Application {
         return top10Map;
     }
 
+    // nime küsimine kasutajalt
     private String küsiKasutajaNimi() {
         TextInputDialog dialoog = new TextInputDialog();
         dialoog.setTitle("Sisesta nimi");
         dialoog.setHeaderText("Sisesta oma nimi, et salvestada skoor");
         dialoog.setContentText("Nimi:");
 
+        // näitab küsimust ja ootab kasutaja sisendit
         Optional<String> tulemus = dialoog.showAndWait();
+        // kui kasutaja ei sisesta nime, tagastame "Tundmatu"
         return tulemus.orElse("Tundmatu"); // kui tühjaks jääb
     }
 
