@@ -54,9 +54,13 @@ public class Ruut {
                 Mang.skoor += this.vaartus * 2;
 
                 // Kontrollib, kas tekkis 2048 ja pole juba võitu tulnud
-                if (!Mang.voit && Mang.skoor >= 2048) {
-                    System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Mang.voit = true;
+                if (!Mang.voit) {
+                    for (Ruut ruut : valjak.getRuudud()) {
+                        if (ruut.vaartus == 2048) {
+                            System.out.println("VÕITSID! Aga võid jätkata ikka");
+                            Mang.voit = true;
+                        }
+                    }
                 }
 
                 // Eemaldab vana ruudu väljakult ja ruutude listist
@@ -77,9 +81,13 @@ public class Ruut {
             } else if (checkCollision(suund) && ruutAsukohaJargi(this.x, this.y + 1).getVaartus() == this.vaartus) {
                 ruutAsukohaJargi(this.x, this.y + 1).setVaartus(this.vaartus * 2);
                 Mang.skoor += this.vaartus * 2;
-                if (!Mang.voit && Mang.skoor >= 2048) {
-                    System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Mang.voit = true;
+                if (!Mang.voit) {
+                    for (Ruut ruut : valjak.getRuudud()) {
+                        if (ruut.vaartus == 2048) {
+                            System.out.println("VÕITSID! Aga võid jätkata ikka");
+                            Mang.voit = true;
+                        }
+                    }
                 }
                 valjak.getValjak()[this.y][this.x] = null;
                 valjak.getRuudud().remove(this);
@@ -97,9 +105,13 @@ public class Ruut {
             } else if (checkCollision(suund) && ruutAsukohaJargi(this.x + 1, this.y).getVaartus() == this.vaartus) {
                 ruutAsukohaJargi(this.x + 1, this.y).setVaartus(this.vaartus * 2);
                 Mang.skoor += this.vaartus * 2;
-                if (!Mang.voit && Mang.skoor >= 2048) {
-                    System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Mang.voit = true;
+                if (!Mang.voit) {
+                    for (Ruut ruut : valjak.getRuudud()) {
+                        if (ruut.vaartus == 2048) {
+                            System.out.println("VÕITSID! Aga võid jätkata ikka");
+                            Mang.voit = true;
+                        }
+                    }
                 }
                 valjak.getValjak()[this.y][this.x] = null;
                 valjak.getRuudud().remove(this);
@@ -117,9 +129,13 @@ public class Ruut {
             } else if (checkCollision(suund) && ruutAsukohaJargi(this.x - 1, this.y).getVaartus() == this.vaartus) {
                 ruutAsukohaJargi(this.x - 1, this.y).setVaartus(this.vaartus * 2);
                 Mang.skoor += this.vaartus * 2;
-                if (!Mang.voit && Mang.skoor >= 2048) {
-                    System.out.println("VÕITSID! Aga võid jätkata ikka");
-                    Mang.voit = true;
+                if (!Mang.voit) {
+                    for (Ruut ruut : valjak.getRuudud()) {
+                        if (ruut.vaartus == 2048) {
+                            System.out.println("VÕITSID! Aga võid jätkata ikka");
+                            Mang.voit = true;
+                        }
+                    }
                 }
                 valjak.getValjak()[this.y][this.x] = null;
                 valjak.getRuudud().remove(this);
