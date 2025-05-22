@@ -32,7 +32,7 @@ public class MainMenu extends Application {
 
         // pealkiri
         Label h1 = new Label("2048");
-        h1.setFont(Font.font("Arial", 60));
+        h1.setFont(Font.font("comic sans ms", 80));
         h1.setStyle("-fx-text-fill: #776e65; -fx-padding: 40 0 0 0;");
 
         //nupud
@@ -49,28 +49,40 @@ public class MainMenu extends Application {
 
         String tagasiNuppStyle = "-fx-background-radius: 5;" +
                                 "-fx-background-color: #c0c0c0;";
-
         buttonMäng.setPrefSize(300, 50);
         buttonTut.setPrefSize(300, 50);
         buttonSkoor.setPrefSize(300, 50);
         buttonVälju.setPrefSize(300, 50);
         buttonTagasitut.setPrefSize(100, 25);
         buttonTagasiskoor.setPrefSize(100, 25);
-
         buttonMäng.setStyle(menüüNuppStyle);
         buttonTut.setStyle(menüüNuppStyle);
         buttonSkoor.setStyle(menüüNuppStyle);
         buttonVälju.setStyle(menüüNuppStyle);
         buttonTagasitut.setStyle(tagasiNuppStyle);
         buttonTagasiskoor.setStyle(tagasiNuppStyle);
+        buttonMäng.setFont(new Font("Comic Sans MS", 16));
+        buttonTut.setFont(new Font("Comic Sans MS", 16));
+        buttonSkoor.setFont(new Font("Comic Sans MS", 16));
+        buttonVälju.setFont(new Font("Comic Sans MS", 16));
+        buttonTagasitut.setFont(new Font("Comic Sans MS", 16));
+        buttonTagasiskoor.setFont(new Font("Comic Sans MS", 16));
 
         //tutorial paneel
         BorderPane bptut = new BorderPane();
         bptut.setStyle("-fx-background-color: #eee;");
 
-        Label tutorialText = new Label("bomboclat");
-        tutorialText.setAlignment((Pos.CENTER));
-        bptut.setCenter(tutorialText);
+        String tutorialtext = "Mäng toimub 4x4 ruudustikul, mis on alguses tühi. Igal käigul lisandub juhuslikult ühte vabasse lahtrisse uus ruut väärtusega 2 (90% tõenäosusega) või 4 (10% tõenäosusega).\n\n" +
+                "Sina kui mängija, teed käike kasutades WASD-klahve või noole-klahve, käigud määravad ruutude liikumise suuna. Kõik ruudud liiguvad valitud suunas võimalikult kaugele, kuni nad kohtavad takistust – kas teist ruutu või ruudustiku serva. Kui kaks sama väärtusega ruutu kohtuvad, ühinevad nad üheks, mille väärtus on nende summa (näiteks 4 ja 4 → 8). Ühinenud ruut jääb sellele positsioonile, kuhu teine ruut liikus.\n\n" +
+                "Mäng kestab seni, kuni on veel võimalik teha käike, mis muudavad väljakul olevaid ruute. Mängija võidab, kui mängulauale ilmub ruut väärtusega 2048. See aga ei tähenda mängu lõppu – mängija saab otsustada, kas jätkata või lõpetada.\n\n";
+        Label tutorialText = new Label(tutorialtext);
+        tutorialText.setAlignment((Pos.CENTER)); // center text
+        tutorialText.setWrapText(true); // mahuta
+        tutorialText.setPadding(new Insets(40)); // padding
+        tutorialText.setMaxHeight(Double.MAX_VALUE); // scale
+        tutorialText.setFont(new Font("comic sans ms", 18));
+        bptut.setCenter(tutorialText); // borderpane asetus
+        BorderPane.setAlignment(tutorialText, Pos.TOP_CENTER);
 
         BorderPane.setAlignment(buttonTagasitut, Pos.TOP_RIGHT);
         bptut.setTop(buttonTagasitut);
@@ -104,7 +116,7 @@ public class MainMenu extends Application {
 
         buttonTut.setOnAction(e -> bptut.setVisible(true)); // näita tutoriali
 
-        buttonSkoor.setOnAction(e -> {
+        buttonSkoor.setOnAction(e -> { //näita skoore
             skooridekast.getChildren().clear();
 
             Map<String, Integer> skoorid = null;
@@ -121,12 +133,11 @@ public class MainMenu extends Application {
             }
 
             Label skoorTekst = new Label(sb.toString());
-            skoorTekst.setStyle("-fx-font-size: 18; -fx-text-fill: #333;");
+            skoorTekst.setStyle("-fx-font-size: 18; -fx-text-fill: #333; -fx-font-family: 'Comic Sans MS';");
             bpskoor.setCenter(skoorTekst);
 
             bpskoor.setVisible(true);
         });
-        //näita skoore
 
         buttonVälju.setOnAction(e -> Platform.exit()); // exit game
 
