@@ -185,6 +185,7 @@ public class Mang extends Application {
             try {
                 processMove(event.getCode());
                 uuendaManguGrid();
+                teade.setVisible(false);
             } catch (ViganeSisendErind | KeelatudKaikErind e) {
                 teade.setText(e.getMessage());
                 teade.setVisible(true);
