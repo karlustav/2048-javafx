@@ -157,56 +157,61 @@ public class Mang extends Application {
         Scene stseen = new Scene(juurStackPane, 4 * (100 + 10) + 20, 4 * (100 + 10) + 100);
 
         stseen.setOnKeyPressed(event -> {
-            if (mangLabiPopup.isVisible() || voitPopup.isVisible()) { // kui mõni popup visible
-                if (event.getCode() == KeyCode.R) { // R input restardi jaoks
+            if (mangLabiPopup.isVisible() || voitPopup.isVisible()) {
+                if (event.getCode() == KeyCode.R) {
                     startGame();
                 }
-                return; // eira inputti
-            }
-            if (valjak.checkGameOver() && event.getCode() != KeyCode.R) { // kui midagi muud peale R siis ära võta inputti
-                return; // eira inputti
+                return;
             }
 
-            // inputid
-            String suund = null;
-            switch (event.getCode()) {
-                case W: case UP:
-                    suund = "yles";
-                    break;
-                case A: case LEFT:
-                    suund = "vasakule";
-                    break;
-                case S: case DOWN:
-                    suund = "alla";
-                    break;
-                case D: case RIGHT:
-                    suund = "paremale";
-                    break;
-                case Q: // lahku mängust
-                    System.exit(0);
-                    break;
-                case R: // restart
-                    startGame();
-                    return;
+            if (valjak.checkGameOver() && event.getCode() != KeyCode.R) {
+                return;
             }
 
-            if (suund != null) {
-                String vanaGrid = Arrays.deepToString(valjak.getValjak());
-                valjak.update(suund);
-                // uuenda kui midagi muutus (vana ja uue valjaku vahel)
-                if (!vanaGrid.equals(Arrays.deepToString(valjak.getValjak()))) {
-                    try {
-                        uuendaManguGrid();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            if (event.getCode() == KeyCode.Q) {
+                System.exit(0);
+                return;
+            }
+
+            if (event.getCode() == KeyCode.R) {
+                startGame();
+                return;
+            }
+
+            try {
+                processMove(event.getCode());
+                uuendaManguGrid();
+            } catch (ViganeSisendErind | KeelatudKaikErind e) {
+                teade.setText(e.getMessage());
+                teade.setVisible(true);
+                teade.setManaged(true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
+
 
         peaLava.setScene(stseen);
         peaLava.show();
         startGame(); // alusta mäng
+    }
+
+    private void processMove(KeyCode keyCode) throws ViganeSisendErind, KeelatudKaikErind {
+        String suund = switch (keyCode) {
+            case W, UP -> "yles";
+            case A, LEFT -> "vasakule";
+            case S, DOWN -> "alla";
+            case D, RIGHT -> "paremale";
+            default -> throw new ViganeSisendErind("Lubamatu sisend. Kasuta W, A, S, D või nooleklahve.");
+        };
+
+        String vanaGrid = Arrays.deepToString(valjak.getValjak());
+        valjak.update(suund);
+        String uusGrid = Arrays.deepToString(valjak.getValjak());
+
+        if (vanaGrid.equals(uusGrid)) {
+            throw new KeelatudKaikErind("Käik ei muutnud midagi.");
+        }
     }
 
     // alusta mäng
